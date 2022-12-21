@@ -10,42 +10,42 @@ public class D20 {
 
     public static void main(String[] args) {
         Util.tStart(0);
-        final List<Number> numbers = getInput();
+        final List<NumWithIdx> numbers = getInput();
         calcIt(numbers, 1);
         calcIt(numbers, 10);
         Util.tEnd(0);
     }
 
-    public record Number(int idx, int val, BigInteger bigVal) {
-        Number(int idx, int value) {
+    public record NumWithIdx(int idx, int val, BigInteger bigVal) {
+        NumWithIdx(int idx, int value) {
             this(idx, value, BigInteger.valueOf(value).multiply(BigInteger.valueOf(811589153)));
         }
     }
 
-    protected static List<Number> getInput() {
+    protected static List<NumWithIdx> getInput() {
         String[] lines = INPUT.split("\n");
-        final var result = new ArrayList<Number>(lines.length);
+        final var result = new ArrayList<NumWithIdx>(lines.length);
         for (int i = 0; i < lines.length; i++) {
-            result.add(new Number(i, Integer.valueOf(lines[i], 10)));
+            result.add(new NumWithIdx(i, Integer.valueOf(lines[i], 10)));
         }
         return Collections.unmodifiableList(result);
     }
 
-    public static final void calcIt(List<Number> nums, int loops) {
+    public static final void calcIt(List<NumWithIdx> nums, int loops) {
 
         HashMap<Integer, Integer> indexMap = new HashMap<>(nums.size());
-        Number zero = null;
-        for (Number number : nums) {
+        NumWithIdx zero = null;
+        for (NumWithIdx number : nums) {
             indexMap.put(number.idx, number.val());
             if (number.val() == 0) {
                 zero = number;
             }
         }
 
-        ArrayList<Number> worklist = new ArrayList<>(nums);
+        ArrayList<NumWithIdx> worklist = new ArrayList<>(nums);
 
         for (int i = loops; --i >= 0; ) {
-            for (final Number aNum : nums) {
+            for (final NumWithIdx aNum : nums) {
                 int orgIdx = worklist.indexOf(aNum);
                 worklist.remove(orgIdx);
 

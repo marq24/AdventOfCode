@@ -31,6 +31,9 @@ public class D21 {
         CopyOfApacheCommonsFractionAsLongFrac slope = solve2(map, linFuncKey, 1).subtract(solve2(map, linFuncKey, 0));
         CopyOfApacheCommonsFractionAsLongFrac result2 = constVal.subtract(solve2(map, linFuncKey, 0)).divideBy(slope);
 
+        // slope as double: -17.765625; -> -160/9 = 17,77777777777778
+        // constVal as double: 5.5897899750372E13 -> 55897899750372/1
+        // result2 as double: 3.249538632583617E12 -> 3247317268284/1
         if(solve2(map, linFuncKey, result2.longValue()).equals(solve2(map, constKey, result2.longValue()))) {
             System.out.println("res2: " + result2);
         }
