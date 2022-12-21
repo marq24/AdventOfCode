@@ -29,15 +29,10 @@ public class D21 {
         LongFrac slope = rootOp.solve2(lKey, 1).subtract(rootOp.solve2(lKey, 0));
         LongFrac result2 = (constVal.subtract(rootOp.solve2(lKey, 0))).divideBy(slope);
 
-        if(rootOp.solve2(lKey, result2.intValue()).equals(rootOp.solve2(cKey, result2.intValue()))) {
-            //assert solve2(a, ans2) == solve2(c, ans2)
+        if(rootOp.solve2(lKey, result2.longValue()).equals(rootOp.solve2(cKey, result2.longValue()))) {
             System.out.println("res2: " + result2);
         }
         Util.tEnd(0);
-    }
-
-    private static long gcm(long a, long b) {
-        return b == 0 ? a : gcm(b, a % b);
     }
 
     public record Op(String[] op){
@@ -61,7 +56,7 @@ public class D21 {
             throw new RuntimeException();
         }
 
-        public LongFrac solve2(String key, int loopVal){
+        public LongFrac solve2(String key, long loopVal){
             if(key.equals("humn")){
                 return LongFrac.getLongFrac(loopVal, 1);
             }else {
