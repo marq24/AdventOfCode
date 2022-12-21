@@ -2,7 +2,7 @@ package de.emac.aoc;
 
 import java.math.BigInteger;
 
-public class LongFrac implements Comparable<LongFrac> {
+public class CopyOfApacheCommonsFractionAsLongFrac implements Comparable<CopyOfApacheCommonsFractionAsLongFrac> {
     /**
      * Required for serialization support. Lang version 2.0.
      *
@@ -13,60 +13,13 @@ public class LongFrac implements Comparable<LongFrac> {
     /**
      * {@code LongFrac} representation of 0.
      */
-    public static final LongFrac ZERO = new LongFrac(0, 1);
+    public static final CopyOfApacheCommonsFractionAsLongFrac ZERO = new CopyOfApacheCommonsFractionAsLongFrac(0, 1);
     /**
      * {@code LongFrac} representation of 1.
      */
-    public static final LongFrac ONE = new LongFrac(1, 1);
-    /**
-     * {@code LongFrac} representation of 1/2.
-     */
-    public static final LongFrac ONE_HALF = new LongFrac(1, 2);
-    /**
-     * {@code LongFrac} representation of 1/3.
-     */
-    public static final LongFrac ONE_THIRD = new LongFrac(1, 3);
-    /**
-     * {@code LongFrac} representation of 2/3.
-     */
-    public static final LongFrac TWO_THIRDS = new LongFrac(2, 3);
-    /**
-     * {@code LongFrac} representation of 1/4.
-     */
-    public static final LongFrac ONE_QUARTER = new LongFrac(1, 4);
-    /**
-     * {@code LongFrac} representation of 2/4.
-     */
-    public static final LongFrac TWO_QUARTERS = new LongFrac(2, 4);
-    /**
-     * {@code LongFrac} representation of 3/4.
-     */
-    public static final LongFrac THREE_QUARTERS = new LongFrac(3, 4);
-    /**
-     * {@code LongFrac} representation of 1/5.
-     */
-    public static final LongFrac ONE_FIFTH = new LongFrac(1, 5);
-    /**
-     * {@code LongFrac} representation of 2/5.
-     */
-    public static final LongFrac TWO_FIFTHS = new LongFrac(2, 5);
-    /**
-     * {@code LongFrac} representation of 3/5.
-     */
-    public static final LongFrac THREE_FIFTHS = new LongFrac(3, 5);
-    /**
-     * {@code LongFrac} representation of 4/5.
-     */
-    public static final LongFrac FOUR_FIFTHS = new LongFrac(4, 5);
+    public static final CopyOfApacheCommonsFractionAsLongFrac ONE = new CopyOfApacheCommonsFractionAsLongFrac(1, 1);
 
-
-    /**
-     * The numerator number part of the LongFrac (the three in three sevenths).
-     */
     protected final long numerator;
-    /**
-     * The denominator number part of the LongFrac (the seven in three sevenths).
-     */
     protected final long denominator;
 
     /**
@@ -85,12 +38,12 @@ public class LongFrac implements Comparable<LongFrac> {
      * @param numerator  the numerator, for example the three in 'three sevenths'
      * @param denominator  the denominator, for example the seven in 'three sevenths'
      */
-    private LongFrac(final long numerator, final long denominator) {
+    private CopyOfApacheCommonsFractionAsLongFrac(final long numerator, final long denominator) {
         this.numerator = numerator;
         this.denominator = denominator;
     }
 
-    public static LongFrac getLongFrac(long numerator, long denominator) {
+    public static CopyOfApacheCommonsFractionAsLongFrac getLongFrac(long numerator, long denominator) {
         if (denominator == 0) {
             throw new ArithmeticException("The denominator must not be zero");
         }
@@ -101,10 +54,10 @@ public class LongFrac implements Comparable<LongFrac> {
             numerator = -numerator;
             denominator = -denominator;
         }
-        return new LongFrac(numerator, denominator);
+        return new CopyOfApacheCommonsFractionAsLongFrac(numerator, denominator);
     }
 
-    public static LongFrac getReducedLongFrac(long numerator, long denominator) {
+    public static CopyOfApacheCommonsFractionAsLongFrac getReducedLongFrac(long numerator, long denominator) {
         if (denominator == 0) {
             throw new ArithmeticException("The denominator must not be zero");
         }
@@ -127,7 +80,7 @@ public class LongFrac implements Comparable<LongFrac> {
         final long gcd = greatestCommonDivisor(numerator, denominator);
         numerator /= gcd;
         denominator /= gcd;
-        return new LongFrac(numerator, denominator);
+        return new CopyOfApacheCommonsFractionAsLongFrac(numerator, denominator);
     }
 
     /**
@@ -144,7 +97,7 @@ public class LongFrac implements Comparable<LongFrac> {
      * @throws ArithmeticException if the calculated denominator is {@code zero}
      * @throws ArithmeticException if the algorithm does not converge
      */
-    public static LongFrac getLongFrac(double value) {
+    public static CopyOfApacheCommonsFractionAsLongFrac getLongFrac(double value) {
         final int sign = value < 0 ? -1 : 1;
         value = Math.abs(value);
         if (value > Integer.MAX_VALUE || Double.isNaN(value)) {
@@ -227,7 +180,7 @@ public class LongFrac implements Comparable<LongFrac> {
         return numerator / denominator;
     }
 
-    public LongFrac reduce() {
+    public CopyOfApacheCommonsFractionAsLongFrac reduce() {
         if (numerator == 0) {
             return equals(ZERO) ? this : ZERO;
         }
@@ -238,7 +191,7 @@ public class LongFrac implements Comparable<LongFrac> {
         return getLongFrac(numerator / gcd, denominator / gcd);
     }
 
-    public LongFrac invert() {
+    public CopyOfApacheCommonsFractionAsLongFrac invert() {
         if (numerator == 0) {
             throw new ArithmeticException("Unable to invert zero.");
         }
@@ -246,27 +199,27 @@ public class LongFrac implements Comparable<LongFrac> {
             throw new ArithmeticException("overflow: can't negate numerator");
         }
         if (numerator<0) {
-            return new LongFrac(-denominator, -numerator);
+            return new CopyOfApacheCommonsFractionAsLongFrac(-denominator, -numerator);
         }
-        return new LongFrac(denominator, numerator);
+        return new CopyOfApacheCommonsFractionAsLongFrac(denominator, numerator);
     }
 
-    public LongFrac negate() {
+    public CopyOfApacheCommonsFractionAsLongFrac negate() {
         // the positive range is one smaller than the negative range of an int.
         if (numerator==Long.MIN_VALUE) {
             throw new ArithmeticException("overflow: too large to negate");
         }
-        return new LongFrac(-numerator, denominator);
+        return new CopyOfApacheCommonsFractionAsLongFrac(-numerator, denominator);
     }
 
-    public LongFrac abs() {
+    public CopyOfApacheCommonsFractionAsLongFrac abs() {
         if (numerator >= 0) {
             return this;
         }
         return negate();
     }
 
-    public LongFrac pow(final int power) {
+    public CopyOfApacheCommonsFractionAsLongFrac pow(final int power) {
         if (power == 1) {
             return this;
         } else if (power == 0) {
@@ -277,7 +230,7 @@ public class LongFrac implements Comparable<LongFrac> {
             }
             return this.invert().pow(-power);
         } else {
-            final LongFrac f = this.multiplyBy(this);
+            final CopyOfApacheCommonsFractionAsLongFrac f = this.multiplyBy(this);
             if (power % 2 == 0) { // if even...
                 return f.pow(power / 2);
             }
@@ -383,15 +336,15 @@ public class LongFrac implements Comparable<LongFrac> {
         return s;
     }
 
-    public LongFrac add(final LongFrac other) {
+    public CopyOfApacheCommonsFractionAsLongFrac add(final CopyOfApacheCommonsFractionAsLongFrac other) {
         return addSub(other, true /* add */);
     }
 
-    public LongFrac subtract(final LongFrac other) {
+    public CopyOfApacheCommonsFractionAsLongFrac subtract(final CopyOfApacheCommonsFractionAsLongFrac other) {
         return addSub(other, false /* subtract */);
     }
 
-    private LongFrac addSub(final LongFrac other, final boolean isAdd) {
+    private CopyOfApacheCommonsFractionAsLongFrac addSub(final CopyOfApacheCommonsFractionAsLongFrac other, final boolean isAdd) {
         // zero is identity for addition.
         if (numerator == 0) {
             return isAdd ? other : other.negate();
@@ -406,7 +359,7 @@ public class LongFrac implements Comparable<LongFrac> {
             // result is ( (u*v' +/- u'v) / u'v')
             final long uvp = mulAndCheck(numerator, other.denominator);
             final long upv = mulAndCheck(other.numerator, denominator);
-            return new LongFrac(isAdd ? addAndCheck(uvp, upv) : subAndCheck(uvp, upv), mulPosAndCheck(denominator, other.denominator));
+            return new CopyOfApacheCommonsFractionAsLongFrac(isAdd ? addAndCheck(uvp, upv) : subAndCheck(uvp, upv), mulPosAndCheck(denominator, other.denominator));
         }
         // the quantity 't' requires 65 bits of precision; see knuth 4.5.1
         // exercise 7. we're going to use a BigInteger.
@@ -421,7 +374,7 @@ public class LongFrac implements Comparable<LongFrac> {
 
         // result is (t/d2) / (u'/d1)(v'/d2)
         final BigInteger w = t.divide(BigInteger.valueOf(d2));
-        return new LongFrac(w.longValue(), mulPosAndCheck(denominator / d1, other.denominator / d2));
+        return new CopyOfApacheCommonsFractionAsLongFrac(w.longValue(), mulPosAndCheck(denominator / d1, other.denominator / d2));
     }
 
     /**
@@ -434,7 +387,7 @@ public class LongFrac implements Comparable<LongFrac> {
      * @throws ArithmeticException if the resulting numerator or denominator exceeds
      *  {@code Integer.MAX_VALUE}
      */
-    public LongFrac multiplyBy(final LongFrac other) {
+    public CopyOfApacheCommonsFractionAsLongFrac multiplyBy(final CopyOfApacheCommonsFractionAsLongFrac other) {
         if (numerator == 0 || other.numerator == 0) {
             return ZERO;
         }
@@ -455,7 +408,7 @@ public class LongFrac implements Comparable<LongFrac> {
      * @throws ArithmeticException if the resulting numerator or denominator exceeds
      *  {@code Integer.MAX_VALUE}
      */
-    public LongFrac divideBy(final LongFrac other) {
+    public CopyOfApacheCommonsFractionAsLongFrac divideBy(final CopyOfApacheCommonsFractionAsLongFrac other) {
         if (other.numerator == 0) {
             throw new ArithmeticException("The LongFrac to divide by must not be zero");
         }
@@ -478,11 +431,11 @@ public class LongFrac implements Comparable<LongFrac> {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof LongFrac)) {
+        if (!(obj instanceof CopyOfApacheCommonsFractionAsLongFrac)) {
             return false;
         }
-        final LongFrac other = (LongFrac) obj;
-        return getNumerator() == other.getNumerator() && getDenominator() == other.getDenominator();
+        final CopyOfApacheCommonsFractionAsLongFrac other = (CopyOfApacheCommonsFractionAsLongFrac) obj;
+        return numerator == other.numerator && denominator == other.denominator;
     }
 
     @Override
@@ -495,7 +448,7 @@ public class LongFrac implements Comparable<LongFrac> {
     }
 
     @Override
-    public int compareTo(final LongFrac other) {
+    public int compareTo(final CopyOfApacheCommonsFractionAsLongFrac other) {
         if (this == other) {
             return 0;
         }
@@ -512,7 +465,7 @@ public class LongFrac implements Comparable<LongFrac> {
     @Override
     public String toString() {
         if (toString == null) {
-            toString = getNumerator() + "/" + getDenominator();
+            toString = numerator + "/" + denominator;
         }
         return toString;
     }

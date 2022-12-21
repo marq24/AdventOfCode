@@ -21,13 +21,13 @@ public class D21 {
 
         // second value in the root OP is always CONSTANT
         String cKey = rootOp.op[2];
-        LongFrac constVal = rootOp.solve2(cKey, 0);
+        CopyOfApacheCommonsFractionAsLongFrac constVal = rootOp.solve2(cKey, 0);
 
         // and the first part is a linear equation - as move as X (loop val)
         // increase, the result will increase as well..
         String lKey = rootOp.op[0];
-        LongFrac slope = rootOp.solve2(lKey, 1).subtract(rootOp.solve2(lKey, 0));
-        LongFrac result2 = (constVal.subtract(rootOp.solve2(lKey, 0))).divideBy(slope);
+        CopyOfApacheCommonsFractionAsLongFrac slope = rootOp.solve2(lKey, 1).subtract(rootOp.solve2(lKey, 0));
+        CopyOfApacheCommonsFractionAsLongFrac result2 = (constVal.subtract(rootOp.solve2(lKey, 0))).divideBy(slope);
 
         if(rootOp.solve2(lKey, result2.longValue()).equals(rootOp.solve2(cKey, result2.longValue()))) {
             System.out.println("res2: " + result2);
@@ -36,10 +36,10 @@ public class D21 {
     }
 
     public record Op(String[] op){
-        public LongFrac solve1(String key){
+        public CopyOfApacheCommonsFractionAsLongFrac solve1(String key){
             String[] op = map.get(key).op;
             if(op.length == 1){
-                return LongFrac.getLongFrac(Integer.parseInt(op[0]), 1);
+                return CopyOfApacheCommonsFractionAsLongFrac.getLongFrac(Integer.parseInt(op[0]), 1);
             } else{
                 switch (op[1]){
                     case "+":
@@ -56,13 +56,13 @@ public class D21 {
             throw new RuntimeException();
         }
 
-        public LongFrac solve2(String key, long loopVal){
+        public CopyOfApacheCommonsFractionAsLongFrac solve2(String key, long loopVal){
             if(key.equals("humn")){
-                return LongFrac.getLongFrac(loopVal, 1);
+                return CopyOfApacheCommonsFractionAsLongFrac.getLongFrac(loopVal, 1);
             }else {
                 String[] op = map.get(key).op;
                 if (op.length == 1) {
-                    return LongFrac.getLongFrac(Integer.parseInt(op[0]), 1);
+                    return CopyOfApacheCommonsFractionAsLongFrac.getLongFrac(Integer.parseInt(op[0]), 1);
                 } else {
                     switch (op[1]) {
                         case "+":
