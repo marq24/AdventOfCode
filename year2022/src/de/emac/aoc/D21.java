@@ -4,81 +4,79 @@ import java.util.HashMap;
 
 public class D21 {
 
-    private static HashMap<String, Op> map;
     public static void main(String[] args) {
         Util.tStart(0);
-        map = new HashMap<String, Op>();
+        HashMap<String, String[]> map = new HashMap<>();
         String[] lines = INPUT.split("\n");
         for(int l=0; l< lines.length; l++){
             String line = lines[l];
             int i = line.indexOf(':');
             String key = line.substring(0, i);
-            map.put(key, new Op(line.substring(i+2).split(" ")));
+            map.put(key, line.substring(i+2).split(" "));
         }
 
-        Op rootOp = map.get("root");
-        System.out.println("res1: "+rootOp.solve1("root"));
+        String[] rootOp = map.get("root");
+        System.out.println("res1: "+ solve1(map, "root"));
 
         // second value in the root OP is always CONSTANT
-        String cKey = rootOp.op[2];
-        CopyOfApacheCommonsFractionAsLongFrac constVal = rootOp.solve2(cKey, 0);
+        String cKey = rootOp[2];
+        CopyOfApacheCommonsFractionAsLongFrac constVal = solve2(map, cKey, 0);
 
         // and the first part is a linear equation - as move as X (loop val)
-        // increase, the result will increase as well..
-        String lKey = rootOp.op[0];
-        CopyOfApacheCommonsFractionAsLongFrac slope = rootOp.solve2(lKey, 1).subtract(rootOp.solve2(lKey, 0));
-        CopyOfApacheCommonsFractionAsLongFrac result2 = (constVal.subtract(rootOp.solve2(lKey, 0))).divideBy(slope);
+        // increase, the result will increase as well...
+        String lKey = rootOp[0];
+        CopyOfApacheCommonsFractionAsLongFrac slope = solve2(map, lKey, 1).subtract(solve2(map, lKey, 0));
+        CopyOfApacheCommonsFractionAsLongFrac result2 = (constVal.subtract(solve2(map, lKey, 0))).divideBy(slope);
 
-        if(rootOp.solve2(lKey, result2.longValue()).equals(rootOp.solve2(cKey, result2.longValue()))) {
+        if(solve2(map, lKey, result2.longValue()).equals(solve2(map, cKey, result2.longValue()))) {
             System.out.println("res2: " + result2);
         }
         Util.tEnd(0);
     }
 
-    public record Op(String[] op){
-        public CopyOfApacheCommonsFractionAsLongFrac solve1(String key){
-            String[] op = map.get(key).op;
-            if(op.length == 1){
-                return CopyOfApacheCommonsFractionAsLongFrac.getLongFrac(Integer.parseInt(op[0]), 1);
-            } else{
-                switch (op[1]){
-                    case "+":
-                        return solve1(op[0]).add(solve1(op[2]));
-                    case "-":
-                        return solve1(op[0]).subtract(solve1(op[2]));
-                    case "/":
-                        return solve1(op[0]).divideBy(solve1(op[2]));
-                    case "*":
-                        return solve1(op[0]).multiplyBy(solve1(op[2]));
+    private static CopyOfApacheCommonsFractionAsLongFrac solve1(HashMap<String, String[]> map, String key){
+        String[] op = map.get(key);
+        if(op.length == 1){
+            return CopyOfApacheCommonsFractionAsLongFrac.getLongFrac(Integer.parseInt(op[0]), 1);
+        } else{
+            switch (op[1]){
+                case "+":
+                    return solve1(map, op[0]).add(solve1(map, op[2]));
+                case "-":
+                    return solve1(map, op[0]).subtract(solve1(map, op[2]));
+                case "/":
+                    return solve1(map, op[0]).divideBy(solve1(map, op[2]));
+                case "*":
+                    return solve1(map, op[0]).multiplyBy(solve1(map, op[2]));
 
+            }
+        }
+        throw new RuntimeException();
+    }
+
+    private static CopyOfApacheCommonsFractionAsLongFrac solve2(HashMap<String, String[]> map, String key, long loopVal){
+        if(key.equals("humn")) {
+            return CopyOfApacheCommonsFractionAsLongFrac.getLongFrac(loopVal, 1);
+        } else {
+            String[] op = map.get(key);
+            if (op.length == 1) {
+                return CopyOfApacheCommonsFractionAsLongFrac.getLongFrac(Integer.parseInt(op[0]), 1);
+            } else {
+                switch (op[1]) {
+                    case "+":
+                        return solve2(map, op[0], loopVal).add(solve2(map, op[2], loopVal));
+                    case "-":
+                        return solve2(map, op[0], loopVal).subtract(solve2(map, op[2], loopVal));
+                    case "/":
+                        return solve2(map, op[0], loopVal).divideBy(solve2(map, op[2], loopVal));
+                    case "*":
+                        return solve2(map, op[0], loopVal).multiplyBy(solve2(map, op[2], loopVal));
                 }
             }
             throw new RuntimeException();
         }
-
-        public CopyOfApacheCommonsFractionAsLongFrac solve2(String key, long loopVal){
-            if(key.equals("humn")){
-                return CopyOfApacheCommonsFractionAsLongFrac.getLongFrac(loopVal, 1);
-            }else {
-                String[] op = map.get(key).op;
-                if (op.length == 1) {
-                    return CopyOfApacheCommonsFractionAsLongFrac.getLongFrac(Integer.parseInt(op[0]), 1);
-                } else {
-                    switch (op[1]) {
-                        case "+":
-                            return solve2(op[0], loopVal).add(solve2(op[2], loopVal));
-                        case "-":
-                            return solve2(op[0], loopVal).subtract(solve2(op[2], loopVal));
-                        case "/":
-                            return solve2(op[0], loopVal).divideBy(solve2(op[2], loopVal));
-                        case "*":
-                            return solve2(op[0], loopVal).multiplyBy(solve2(op[2], loopVal));
-                    }
-                }
-                throw new RuntimeException();
-            }
-        }
     }
+
 
     public static final String INTEST = """
                     root: pppw + sjmn
