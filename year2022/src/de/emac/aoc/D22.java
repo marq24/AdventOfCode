@@ -9,6 +9,7 @@ public class D22 {
     public static int XMAX = 0;
     public static int YMAX = 0;
     public static void main(String[] args) {
+
         HashMap<Pos, Integer> map = new HashMap<>();
         String moves = INPUT2;
         String[] lines = INPUT.split("\n");
@@ -29,7 +30,7 @@ public class D22 {
                 } else if (data[x]=='#'){
                     map.put(p, 2);
                 }else{
-                    map.put(p, 0);
+                    //map.put(p, 0);
                 }
             }
         }
@@ -50,15 +51,11 @@ public class D22 {
 
                 default:
                     int steps = Integer.parseInt(s);
-                    logIt(curPos, course, steps);
+                    //logIt(curPos, course, steps);
                     curPos = makeMove(map, curPos, steps, course);
             }
         }
 
-        // 77316 -> too LOW...
-        // 110048 -> too HIGH
-        // 92400 -> too HIGH
-        // 66292 -> CORRECT!
         int res1 = 1000 * curPos.y + 4 * curPos.x + course;
         System.out.println("Res1: "+res1 +" (66292)");
 
@@ -86,238 +83,35 @@ public class D22 {
         // do we need to go right, down, left or up ?
         switch (course){
             case 3: // UP
-                return goUp(map, curPos, steps);
-            case 0:
-                return goRight(map, curPos, steps);
+                return goStep(map, curPos, steps, 0, -1);
+            case 0: // RIGHT
+                return goStep(map, curPos, steps, +1, 0);
             case 1: // DOWN
-                return goDown(map, curPos, steps);
-            case 2:
-                return goLeft(map, curPos, steps);
+                return goStep(map, curPos, steps, 0, +1);
+            case 2: // LEFT
+                return goStep(map, curPos, steps, -1, 0);
         }
         return curPos;
     }
-
-    /*private interface Checkcb {
-        public boolean doCheck(int val);
-    }
-
-    private static Pos goUpDown(HashMap<Pos, Integer> map, Pos curPos, int steps, int d, int from, Checkcb cb) {
-        Pos checkedPos = null;
-        for(int y=from; cb.doCheck(y); y++) {
-            Pos checkPos = new Pos(curPos.x, curPos.y - y);
-            int posMapValue = 0;
-            if (map.containsKey(checkPos)){
-                posMapValue = map.get(checkPos);
-            }
-            if(posMapValue == 0){
-                // ok we are reaching the end
-                for(int ys=from; cb.doCheck(ys) ;ys = ys+d){
-                    Pos searchPos = new Pos(curPos.x, ys);
-                    if(map.containsKey(searchPos)){
-                        int searchPosMapValue = map.get(searchPos);
-                        if(searchPosMapValue > 0){
-                            if(searchPosMapValue == 2){
-                                posMapValue = 2;
-                                break;
-                            } else {
-                                curPos = new Pos(checkPos.x, ys);
-                                checkPos = curPos;
-                                steps = steps-y;
-                                y=0;
-                                break;
-                            }
-                        }
-                    }
+    private static Pos goStep(HashMap<Pos, Integer> map, Pos curPos, int steps, int x, int y) {
+        for(int i=0; i<steps; i++) {
+            Pos checkPos = new Pos(curPos.x + x, curPos.y + y);
+            if (!map.containsKey(checkPos)){
+                Pos checkPosWrapped = new Pos(curPos.x, curPos.y);
+                while(map.containsKey(checkPosWrapped)){
+                    checkPos = new Pos(checkPosWrapped.x, checkPosWrapped.y);
+                    checkPosWrapped = new Pos(checkPosWrapped.x - x, checkPosWrapped.y - y);
                 }
             }
-
+            int posMapValue = map.get(checkPos);
             if(posMapValue == 2){
                 // we have reached a blocker, so we stop here...
                 break;
             } else {
-                // ok we can make our step...
-                checkedPos = checkPos;
+                curPos = checkPos;
             }
         }
-        if(checkedPos != null){
-            return checkedPos;
-        }
-        return curPos;
-    }*/
-
-    private static Pos goUp(HashMap<Pos, Integer> map, Pos curPos, int steps) {
-        Pos checkedPos = null;
-        for(int y=1; y <= steps; y++) {
-            Pos checkPos = new Pos(curPos.x, curPos.y - y);
-            int posMapValue = 0;
-            if (map.containsKey(checkPos)){
-                posMapValue = map.get(checkPos);
-            }
-            if(posMapValue == 0){
-                // ok we are reaching the end
-                for(int ys=YMAX+1; ys>=0; ys--){
-                    Pos searchPos = new Pos(curPos.x, ys);
-                    if(map.containsKey(searchPos)){
-                        int searchPosMapValue = map.get(searchPos);
-                        if(searchPosMapValue > 0){
-                            if(searchPosMapValue == 2){
-                                posMapValue = 2;
-                                break;
-                            } else {
-                                curPos = new Pos(checkPos.x, ys);
-                                checkPos = curPos;
-                                steps = steps-y;
-                                y=0;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if(posMapValue == 2){
-                // we have reached a blocker, so we stop here...
-                break;
-            } else {
-                // ok we can make our step...
-                checkedPos = checkPos;
-            }
-        }
-        if(checkedPos != null){
-            return checkedPos;
-        }
-        return curPos;
-    }
-
-    private static Pos goDown(HashMap<Pos, Integer> map, Pos curPos, int steps) {
-        Pos checkedPos = null;
-        for(int y=1; y <= steps; y++){
-            Pos checkPos = new Pos(curPos.x, curPos.y + y);
-            int posMapValue = 0;
-            if (map.containsKey(checkPos)){
-                posMapValue = map.get(checkPos);
-            }
-            if(posMapValue == 0){
-                // ok we are reaching the end
-                for(int ys=0; ys<YMAX+1; ys++){
-                    Pos searchPos = new Pos(curPos.x, ys);
-                    if(map.containsKey(searchPos)){
-                        int searchPosMapValue = map.get(searchPos);
-                        if(searchPosMapValue > 0){
-                            if(searchPosMapValue == 2){
-                                posMapValue = 2;
-                                break;
-                            } else {
-                                curPos = new Pos(checkPos.x, ys);
-                                checkPos = curPos;
-                                steps = steps-y;
-                                y=0;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if(posMapValue == 2){
-                // we have reached a blocker, so we stop here...
-                break;
-            } else {
-                // ok we can make our step...
-                checkedPos = checkPos;
-            }
-        }
-        if(checkedPos != null){
-            return checkedPos;
-        }
-        return curPos;
-    }
-
-    private static Pos goLeft(HashMap<Pos, Integer> map, Pos curPos, int steps) {
-        Pos checkedPos = null;
-        for(int x=1; x <= steps; x++){
-            Pos checkPos = new Pos(curPos.x - x, curPos.y);
-            int posMapValue = 0;
-            if (map.containsKey(checkPos)){
-                posMapValue = map.get(checkPos);
-            }
-            if(posMapValue == 0){
-                // ok we are reaching the end
-                for(int xs=XMAX+1; xs>=0; xs--){
-                    Pos searchPos = new Pos(xs, curPos.y);
-                    if(map.containsKey(searchPos)){
-                        int searchPosMapValue = map.get(searchPos);
-                        if(searchPosMapValue > 0){
-                            if(searchPosMapValue == 2){
-                                posMapValue = 2;
-                                break;
-                            } else {
-                                curPos = new Pos(xs, checkPos.y);
-                                checkPos = curPos;
-                                steps = steps-x;
-                                x=0;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if(posMapValue == 2){
-                // we have reached a blocker, so we stop here...
-                break;
-            } else {
-                // ok we can make our step...
-                checkedPos = checkPos;
-            }
-        }
-        if(checkedPos != null){
-            return checkedPos;
-        }
-        return curPos;
-    }
-
-    private static Pos goRight(HashMap<Pos, Integer> map, Pos curPos, int steps) {
-        Pos checkedPos = null;
-        for(int x=1; x <= steps; x++){
-            Pos checkPos = new Pos(curPos.x + x, curPos.y);
-            int posMapValue = 0;
-            if (map.containsKey(checkPos)){
-                posMapValue = map.get(checkPos);
-            }
-            if(posMapValue == 0){
-                // ok we are reaching the end
-                for(int xs=0; xs<XMAX+1; xs++){
-                    Pos searchPos = new Pos(xs, curPos.y);
-                    if(map.containsKey(searchPos)){
-                        int searchPosMapValue = map.get(searchPos);
-                        if(searchPosMapValue > 0){
-                            if(searchPosMapValue == 2){
-                                posMapValue = 2;
-                                break;
-                            } else {
-                                curPos = new Pos(xs, checkPos.y);
-                                checkPos = curPos;
-                                steps = steps-x;
-                                x=0;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if(posMapValue == 2){
-                // we have reached a blocker, so we stop here...
-                break;
-            } else {
-                // ok we can make our step...
-                checkedPos = checkPos;
-            }
-        }
-        if(checkedPos != null){
-            return checkedPos;
-        }
+        // ok we can make our step...
         return curPos;
     }
 
