@@ -13,8 +13,8 @@ public class D22 {
         HashMap<Pos, Integer> map = new HashMap<>();
         String moves = INPUT2;
         String[] lines = INPUT.split("\n");
-        //moves = INTEST2;
-        //lines = INTEST.split("\n");
+        moves = INTEST2;
+        lines = INTEST.split("\n");
         Pos start = null;
         XMAX = lines[0].length();
         YMAX = lines.length;
@@ -36,31 +36,85 @@ public class D22 {
         }
         Util.tStart(0);
 
-        int course = 0;
-        Pos curPos = start;
+        int course2D = 0;
+        int course3D = 0;
+        Pos current2DPosition = new Pos(start.x, start.y);
+        Pos current3DPosition = new Pos(start.x, start.y);
+
         Matcher m = Pattern.compile("[RL]|\\d+").matcher(moves);
+
+        WrapStrategy strategy2D = (lastValidPos, course, xDirection, yDirection) -> {
+            Pos checkPosWrapped = new Pos(lastValidPos.x, lastValidPos.y);
+            while(map.containsKey(checkPosWrapped)){
+                lastValidPos = new Pos(checkPosWrapped.x, checkPosWrapped.y);
+                checkPosWrapped = new Pos(checkPosWrapped.x - xDirection, checkPosWrapped.y - yDirection);
+            }
+            return new PosAndCourse(lastValidPos, course);
+        };
+
+        WrapStrategy strategy3D = (lastValidPos, course, xDirection, yDirection) -> {
+            // here all the magic has to happen...
+            // we have to decide, if we wrap the x and y axis as well as changing the
+            // course...
+
+            // here is the PATTERN of the EXAMPLE sectors
+            //   1
+            // 324
+            //   65
+
+            // that's the PATTERN of the INPUT
+            //  13
+            //  2
+            // 46
+            // 5
+            Pos checkPosWrapped = new Pos(lastValidPos.x, lastValidPos.y);
+            while(map.containsKey(checkPosWrapped)){
+                lastValidPos = new Pos(checkPosWrapped.x, checkPosWrapped.y);
+                checkPosWrapped = new Pos(checkPosWrapped.x - xDirection, checkPosWrapped.y - yDirection);
+            }
+            return new PosAndCourse(lastValidPos, course);
+        };
+
         while (m.find()) {
             String s = m.group();
             switch (s) {
                 case "R":
-                    course = ((course + 1) + 4) % 4;
+                    course2D = ((course2D + 1) + 4) % 4;
+                    course3D = ((course3D + 1) + 4) % 4;
                     break;
                 case "L":
-                    course = ((course - 1) + 4) % 4;
+                    course2D = ((course2D - 1) + 4) % 4;
+                    course3D = ((course3D - 1) + 4) % 4;
                     break;
 
                 default:
                     int steps = Integer.parseInt(s);
-                    //logIt(curPos, course, steps);
-                    curPos = makeMove(map, curPos, steps, course);
+
+                    //logIt(current2DPosition, course2D, steps);
+                    PosAndCourse twoD = makeMove(map, current2DPosition, course2D, steps, strategy2D);
+                    current2DPosition = twoD.pos;
+                    course2D = twoD.course;
+
+                    logIt(current3DPosition, course3D, steps);
+                    PosAndCourse threeD = makeMove(map, current3DPosition, course3D, steps, strategy3D);
+                    current3DPosition = threeD.pos;
+                    course3D = threeD.course;
             }
         }
 
-        int res1 = 1000 * curPos.y + 4 * curPos.x + course;
-        System.out.println("Res1: "+res1 +" (66292)");
+        int res1 = 1000 * current2DPosition.y + 4 * current2DPosition.x + course2D;
+        System.out.println("Res1: "+res1 +" (6032/66292)");
+
+        int res2 = 1000 * current3DPosition.y + 4 * current3DPosition.x + course3D;
+        System.out.println("Res2: "+res2 +" (5031/127012)");
 
         Util.tEnd(0);
     }
+    public interface WrapStrategy{
+        PosAndCourse wrap(Pos checkPos, int course, int xDirection, int yDirection);
+    }
+
+    public record PosAndCourse(Pos pos, int course){}
 
     private static void logIt(Pos curPos, int course, int steps) {
         switch (course){
@@ -79,29 +133,27 @@ public class D22 {
         }
     }
 
-    private static Pos makeMove(HashMap<Pos, Integer> map, Pos curPos, int steps, int course) {
+    private static PosAndCourse makeMove(HashMap<Pos, Integer> map, Pos pos, int course, int steps, WrapStrategy strategy) {
         // do we need to go right, down, left or up ?
         switch (course){
             case 3: // UP
-                return goStep(map, curPos, steps, 0, -1);
+                return goStep(map, pos, course, steps, 0, -1, strategy);
             case 0: // RIGHT
-                return goStep(map, curPos, steps, +1, 0);
+                return goStep(map, pos, course, steps, +1, 0, strategy);
             case 1: // DOWN
-                return goStep(map, curPos, steps, 0, +1);
+                return goStep(map, pos, course, steps,0, +1, strategy);
             case 2: // LEFT
-                return goStep(map, curPos, steps, -1, 0);
+                return goStep(map, pos, course, steps,-1, 0, strategy);
         }
-        return curPos;
+        return null;
     }
-    private static Pos goStep(HashMap<Pos, Integer> map, Pos curPos, int steps, int x, int y) {
+    private static PosAndCourse goStep(HashMap<Pos, Integer> map, Pos curPos, int course, int steps, int xDirection, int yDirection, WrapStrategy strategy) {
         for(int i=0; i<steps; i++) {
-            Pos checkPos = new Pos(curPos.x + x, curPos.y + y);
+            Pos checkPos = new Pos(curPos.x + xDirection, curPos.y + yDirection);
             if (!map.containsKey(checkPos)){
-                Pos checkPosWrapped = new Pos(curPos.x, curPos.y);
-                while(map.containsKey(checkPosWrapped)){
-                    checkPos = new Pos(checkPosWrapped.x, checkPosWrapped.y);
-                    checkPosWrapped = new Pos(checkPosWrapped.x - x, checkPosWrapped.y - y);
-                }
+                PosAndCourse res = strategy.wrap(curPos, course, xDirection, yDirection);
+                checkPos = res.pos;
+                course = res.course;
             }
             int posMapValue = map.get(checkPos);
             if(posMapValue == 2){
@@ -112,7 +164,7 @@ public class D22 {
             }
         }
         // ok we can make our step...
-        return curPos;
+        return new PosAndCourse(curPos, course);
     }
 
     public record Pos(int x, int y){
@@ -343,4 +395,3 @@ public class D22 {
 ..................................................
 ....................#...#..#.#....................""";
 }
-
