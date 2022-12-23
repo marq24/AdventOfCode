@@ -12,13 +12,24 @@ public class D23 {
 
     public static void v1(HashMap<Pos, Character> map) {
         Util.tStart(0);
-        expandMap(map, 10);
-        Util.tEnd(0, "Res1: "+countEmptyArea(map)+" (4208)");
+        solveIt(map, 10);
+        int minX = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE;
+        int minY = Integer.MAX_VALUE;
+        int maxY = Integer.MIN_VALUE;
+        for (Pos elf : map.keySet()) {
+            minX = Math.min(minX, elf.x);
+            maxX = Math.max(maxX, elf.x);
+            minY = Math.min(minY, elf.y);
+            maxY = Math.max(maxY, elf.y);
+        }
+        int area = (maxX - minX + 1) * (maxY - minY + 1);
+        Util.tEnd(0, "Res1: "+ (area - map.size())+" (4208)");
     }
 
     public static void v2(HashMap<Pos, Character> map) {
         Util.tStart(0);
-        Util.tEnd(0, "Res2: "+ expandMap(map, Integer.MAX_VALUE)+" (1016)");
+        Util.tEnd(0, "Res2: "+ solveIt(map, Integer.MAX_VALUE)+" (1016)");
     }
 
     public static HashMap<Pos, Character> readMapData(){
@@ -35,11 +46,11 @@ public class D23 {
         return map;
     }
 
-    public static int expandMap(Map<Pos, Character> map, int maxRounds) {
+    public static int solveIt(HashMap<Pos, Character> map, int rounds) {
         boolean changed = true;
         int round = 0;
         while (changed){
-            HashMap<Pos, ArrayList<Pos>> proposals = new HashMap<>();
+            HashMap<Pos, ArrayList<Pos>> suggestions = new HashMap<>();
             for(Pos elf: map.keySet()) {
                 int occupiedNeighbourCount = 0;
                 for(Pos otherElf: elf.getNeighboursAsFlatSet()){
@@ -60,10 +71,10 @@ public class D23 {
                         }
                         if (occupiedInGroup == 0) {
                             Pos keyPos = neighboursInAGroup.get(0);
-                            ArrayList<Pos> list = proposals.get(keyPos);
+                            ArrayList<Pos> list = suggestions.get(keyPos);
                             if(list==null){
                                 list = new ArrayList<>();
-                                proposals.put(keyPos, list);
+                                suggestions.put(keyPos, list);
                             }
                             list.add(elf);
                             doNext = false;
@@ -72,31 +83,16 @@ public class D23 {
                 }
             }
 
-            for(Map.Entry<Pos, ArrayList<Pos>> aEntry : proposals.entrySet()){
+            for(Map.Entry<Pos, ArrayList<Pos>> aEntry : suggestions.entrySet()){
                 if(aEntry.getValue().size() == 1){
                     map.remove(aEntry.getValue().get(0));
                     map.put(aEntry.getKey(), ELF);
                 }
             }
             round++;
-            changed = proposals.size() > 0 && round < maxRounds;
+            changed = suggestions.size() > 0 && round < rounds;
         }
         return round;
-    }
-
-    public static int countEmptyArea(Map<Pos, Character> map) {
-        int minX = Integer.MAX_VALUE;
-        int maxX = Integer.MIN_VALUE;
-        int minY = Integer.MAX_VALUE;
-        int maxY = Integer.MIN_VALUE;
-        for (Pos elf : map.keySet()) {
-            minX = Math.min(minX, elf.x);
-            maxX = Math.max(maxX, elf.x);
-            minY = Math.min(minY, elf.y);
-            maxY = Math.max(maxY, elf.y);
-        }
-        int area = (maxX - minX + 1) * (maxY - minY + 1);
-        return area - map.size();
     }
 
     private record Pos(int x, int y) {
