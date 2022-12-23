@@ -122,11 +122,11 @@ public class D22 {
 
     private static CourseAndPosition next3D(CourseAndPosition courseAndPos) {
         String side = courseAndPos.pos.getDiceSide();
-        // that's the PATTERN of the INPUT DICE...
-        //  13
-        //  2
-        // 46
-        // 5
+        // that's the PATTERN of the INPUT DICE... (yellow|red|white|green|orange|blue)
+        //  YR
+        //  W
+        // OG
+        // B
         switch (courseAndPos.course.asInt()){
             case 0: // right
                 return switch (side) {
@@ -193,10 +193,10 @@ public class D22 {
 
         public String getDiceSide() {
             // that's the PATTERN of the INPUT DICE...
-            //  13
-            //  2
-            // 46
-            // 5
+            //  YR
+            //  W
+            // OG
+            // B
 
             if (y < 51 && x < 101) {
                 return "ONE";
