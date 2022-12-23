@@ -70,11 +70,11 @@ public class D23 {
                             }
                         }
                         if (occupiedInGroup == 0) {
-                            Pos keyPos = neighboursInAGroup.get(0);
-                            ArrayList<Pos> list = suggestions.get(keyPos);
+                            Pos possibleNewPos = neighboursInAGroup.get(0);
+                            ArrayList<Pos> list = suggestions.get(possibleNewPos);
                             if(list==null){
                                 list = new ArrayList<>();
-                                suggestions.put(keyPos, list);
+                                suggestions.put(possibleNewPos, list);
                             }
                             list.add(elf);
                             doNext = false;
@@ -84,8 +84,9 @@ public class D23 {
             }
 
             for(Map.Entry<Pos, ArrayList<Pos>> aEntry : suggestions.entrySet()){
-                if(aEntry.getValue().size() == 1){
-                    map.remove(aEntry.getValue().get(0));
+                ArrayList<Pos> candidatesToMove = aEntry.getValue();
+                if(candidatesToMove.size() == 1){
+                    map.remove(candidatesToMove.get(0));
                     map.put(aEntry.getKey(), ELF);
                 }
             }
