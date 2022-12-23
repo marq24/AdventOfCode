@@ -37,7 +37,7 @@ public class D22 {
                 if(data[x]=='.'){
                     map.put(p, EMPTY);
 
-                } else if (data[x]=='#'){
+                } else if (data[x]=='#') {
                     map.put(p, WALL);
                 }
             }
@@ -130,32 +130,32 @@ public class D22 {
         switch (courseAndPos.course.asInt()){
             case 0: // right
                 return switch (side) {
-                    case "TWO" -> new CourseAndPosition(new Pos(100, 151 - courseAndPos.pos.y), LEFT);
-                    case "FOUR" -> new CourseAndPosition(new Pos(150, 151 - courseAndPos.pos.y), LEFT);
-                    case "THREE" -> new CourseAndPosition(new Pos(courseAndPos.pos.y - 50 + 100, 50), UP);
-                    case "SIX" -> new CourseAndPosition(new Pos(courseAndPos.pos.y - 150 + 50, 150), UP);
+                    case "RED" -> new CourseAndPosition(new Pos(100, 151 - courseAndPos.pos.y), LEFT);
+                    case "GREEN" -> new CourseAndPosition(new Pos(150, 151 - courseAndPos.pos.y), LEFT);
+                    case "WHITE" -> new CourseAndPosition(new Pos(courseAndPos.pos.y - 50 + 100, 50), UP);
+                    case "BLUE" -> new CourseAndPosition(new Pos(courseAndPos.pos.y - 150 + 50, 150), UP);
                     default -> null;
                 };
             case 1: // down
                 return switch (side) {
-                    case "TWO" -> new CourseAndPosition(new Pos(100, courseAndPos.pos.x - 50), LEFT);
-                    case "FOUR" -> new CourseAndPosition(new Pos(50, courseAndPos.pos.x - 50 + 150), LEFT);
-                    case "SIX" -> new CourseAndPosition(new Pos(courseAndPos.pos.x + 100, 1), DOWN);
+                    case "RED" -> new CourseAndPosition(new Pos(100, courseAndPos.pos.x - 50), LEFT);
+                    case "GREEN" -> new CourseAndPosition(new Pos(50, courseAndPos.pos.x - 50 + 150), LEFT);
+                    case "BLUE" -> new CourseAndPosition(new Pos(courseAndPos.pos.x + 100, 1), DOWN);
                     default -> null;
                 };
             case 2: // left
                 return switch (side) {
-                    case "ONE" -> new CourseAndPosition(new Pos(1, 151 - courseAndPos.pos.y), RIGHT);
-                    case "FIVE" -> new CourseAndPosition(new Pos(51, 151 - courseAndPos.pos.y), RIGHT);
-                    case "THREE" -> new CourseAndPosition(new Pos(courseAndPos.pos.y - 50, 101), DOWN);
-                    case "SIX" -> new CourseAndPosition(new Pos(courseAndPos.pos.y - 150 + 50, 1), DOWN);
+                    case "YELLOW" -> new CourseAndPosition(new Pos(1, 151 - courseAndPos.pos.y), RIGHT);
+                    case "ORANGE" -> new CourseAndPosition(new Pos(51, 151 - courseAndPos.pos.y), RIGHT);
+                    case "WHITE" -> new CourseAndPosition(new Pos(courseAndPos.pos.y - 50, 101), DOWN);
+                    case "BLUE" -> new CourseAndPosition(new Pos(courseAndPos.pos.y - 150 + 50, 1), DOWN);
                     default -> null;
                 };
             case 3: // up
                 return switch (side) {
-                    case "ONE" -> new CourseAndPosition(new Pos(1, courseAndPos.pos.x - 50 + 150), RIGHT);
-                    case "FIVE" -> new CourseAndPosition(new Pos(51, courseAndPos.pos.x + 50), RIGHT);
-                    case "TWO" -> new CourseAndPosition(new Pos(courseAndPos.pos.x - 100, 200), UP);
+                    case "YELLOW" -> new CourseAndPosition(new Pos(1, courseAndPos.pos.x - 50 + 150), RIGHT);
+                    case "ORANGE" -> new CourseAndPosition(new Pos(51, courseAndPos.pos.x + 50), RIGHT);
+                    case "RED" -> new CourseAndPosition(new Pos(courseAndPos.pos.x - 100, 200), UP);
                     default -> null;
                 };
         }
@@ -192,24 +192,23 @@ public class D22 {
         }
 
         public String getDiceSide() {
-            // that's the PATTERN of the INPUT DICE...
+            // that's the PATTERN of the INPUT DICE... (yellow|red|white|green|orange|blue)
             //  YR
             //  W
             // OG
             // B
-
             if (y < 51 && x < 101) {
-                return "ONE";
+                return "YELLOW";
             } else if (y < 51 && x > 100) {
-                return "TWO";
+                return "RED";
             } else if (y > 50 && y < 101) {
-                return "THREE";
+                return "WHITE";
             } else if (y > 100 && y < 151 && x < 51) {
-                return "FIVE";
+                return "ORANGE";
             } else if (y > 100 && y < 151 && x > 50) {
-                return "FOUR";
+                return "GREEN";
             } else {
-                return "SIX";
+                return "BLUE";
             }
         }
     }
