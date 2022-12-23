@@ -15,8 +15,8 @@ public class D22 {
     private static final Course RIGHT = new Course(1, 0);
 
     private static HashMap<Pos, Character> map = new HashMap<>();
-    private static Map<Integer, Integer> minXonY = new HashMap<>();
-    private static Map<Integer, Integer> maxXonY = new HashMap<>();
+    private static Map<Integer, Integer> minXonYAxis = new HashMap<>();
+    private static Map<Integer, Integer> maxXonYAxis = new HashMap<>();
 
 
     public static void main(String[] args) {
@@ -29,10 +29,10 @@ public class D22 {
             for(int x=0; x < data.length; x++){
                 Pos p = new Pos(x+1, y+1);
                 if(data[x] != ' '){
-                    if (!minXonY.containsKey(y + 1)) {
-                        minXonY.put(y + 1, x + 1);
+                    if (!minXonYAxis.containsKey(y + 1)) {
+                        minXonYAxis.put(y + 1, x + 1);
                     }
-                    maxXonY.put(y + 1, x + 1);
+                    maxXonYAxis.put(y + 1, x + 1);
                 }
                 if(data[x]=='.'){
                     map.put(p, EMPTY);
@@ -54,7 +54,7 @@ public class D22 {
     }
 
     private static int solveIt(String moves, Strategy strategy) {
-        CourseAndPosition currentCourseAndPos = new CourseAndPosition(new Pos(minXonY.get(1), 1), RIGHT);
+        CourseAndPosition currentCourseAndPos = new CourseAndPosition(new Pos(minXonYAxis.get(1), 1), RIGHT);
 
         Matcher m = Pattern.compile("[RL]|\\d+").matcher(moves);
         while (m.find()) {
@@ -87,23 +87,24 @@ public class D22 {
             }
         }
 
-        return 1000 * currentCourseAndPos.pos.y + 4 * currentCourseAndPos.pos.x + currentCourseAndPos.course.toInt();
+        return 1000 * currentCourseAndPos.pos.y + 4 * currentCourseAndPos.pos.x + currentCourseAndPos.course.asInt();
     }
 
     private static CourseAndPosition next2D(CourseAndPosition courseAndPos) {
-        if (courseAndPos.course.isGoingRight()) {
-            return new CourseAndPosition(new Pos(minXonY.get(courseAndPos.pos.y), courseAndPos.pos.y), courseAndPos.course);
-        } else if (courseAndPos.course.isGoingLeft()) {
-            return new CourseAndPosition(new Pos(maxXonY.get(courseAndPos.pos.y), courseAndPos.pos.y), courseAndPos.course);
-        } else if (courseAndPos.course.isGoingDown()) {
-            return new CourseAndPosition(moveUp(courseAndPos.pos), courseAndPos.course);
-        } else if (courseAndPos.course.isGoingUp()) {
-            return new CourseAndPosition(moveDown(courseAndPos.pos), courseAndPos.course);
+        switch (courseAndPos.course.asInt()){
+            case 0: // right
+                return new CourseAndPosition(new Pos(minXonYAxis.get(courseAndPos.pos.y), courseAndPos.pos.y), courseAndPos.course);
+            case 1: // down
+                return new CourseAndPosition(findUpwards(courseAndPos.pos), courseAndPos.course);
+            case 2: // left
+                return new CourseAndPosition(new Pos(maxXonYAxis.get(courseAndPos.pos.y), courseAndPos.pos.y), courseAndPos.course);
+            case 3: // up
+                return new CourseAndPosition(findDownwards(courseAndPos.pos), courseAndPos.course);
         }
         return null;
     }
 
-    private static Pos moveDown(Pos pos) {
+    private static Pos findDownwards(Pos pos) {
         Pos down = new Pos(pos.x, pos.y);
         while (map.containsKey(down)) {
             down = down.moveInDirection(DOWN);
@@ -111,7 +112,7 @@ public class D22 {
         return down.moveInDirection(UP);
     }
 
-    private static Pos moveUp(Pos poa) {
+    private static Pos findUpwards(Pos poa) {
         Pos up = new Pos(poa.x, poa.y);
         while (map.containsKey(up)) {
             up = up.moveInDirection(UP);
@@ -126,7 +127,7 @@ public class D22 {
         //  2
         // 46
         // 5
-        switch (courseAndPos.course.toInt()){
+        switch (courseAndPos.course.asInt()){
             case 0: // right
                 return switch (side) {
                     case "TWO" -> new CourseAndPosition(new Pos(100, 151 - courseAndPos.pos.y), LEFT);
@@ -170,30 +171,17 @@ public class D22 {
             return new Course(-yAxisDelta, xAxisDelta);
         }
 
-        public int toInt() {
-            if (isGoingRight()) {
+        public int asInt() {
+            if (xAxisDelta == 1 && yAxisDelta == 0) {
                 return 0;
-            } else if (isGoingDown()) {
+            } else if (xAxisDelta == 0 && yAxisDelta == 1) {
                 return 1;
-            } else if (isGoingLeft()) {
+            } else if (xAxisDelta == -1 && yAxisDelta == 0) {
                 return 2;
-            } else if (isGoingUp()) {
+            } else if (xAxisDelta == 0 && yAxisDelta == -1) {
                 return 3;
             }
             return Integer.MIN_VALUE;
-        }
-
-        public boolean isGoingUp() {
-            return xAxisDelta == 0 && yAxisDelta == -1;
-        }
-        public boolean isGoingDown() {
-            return xAxisDelta == 0 && yAxisDelta == 1;
-        }
-        public boolean isGoingRight() {
-            return xAxisDelta == 1 && yAxisDelta == 0;
-        }
-        public boolean isGoingLeft() {
-            return xAxisDelta == -1 && yAxisDelta == 0;
         }
     }
 
