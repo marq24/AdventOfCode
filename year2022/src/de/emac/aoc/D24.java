@@ -48,17 +48,17 @@ public class D24 {
 
     private static int v2(TreeMap<Integer, MapAndBliz> mapCache) {
         MapPosState startState = new MapPosState(0, start);
-        MapPosState out = solveIt(mapCache, startState, finish);
-        MapPosState back = solveIt(mapCache, out, start);
-        MapPosState end = solveIt(mapCache, back, finish);
-        return end.minute;
+        MapPosState firstFinishState = solveIt(mapCache, startState, finish);
+        MapPosState backToStartState = solveIt(mapCache, firstFinishState, start);
+        MapPosState secondFinishState = solveIt(mapCache, backToStartState, finish);
+        return secondFinishState.minute;
     }
 
-    private static MapPosState solveIt(TreeMap<Integer, MapAndBliz> mapCache, MapPosState initial, Pos finish) {
+    private static MapPosState solveIt(TreeMap<Integer, MapAndBliz> mapCache, MapPosState start, Pos finish) {
         Queue<MapPosState> workList = new ArrayDeque<>();
         HashSet<MapPosState> visited = new HashSet<>();
-        workList.add(initial);
-        visited.add(initial);
+        workList.add(start);
+        visited.add(start);
 
         while (!workList.isEmpty()) {
             MapPosState curMapState = workList.poll();
