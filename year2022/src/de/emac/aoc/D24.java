@@ -47,8 +47,7 @@ public class D24 {
     }
 
     private static int v2(TreeMap<Integer, MapAndBliz> mapCache) {
-        MapPosState startState = new MapPosState(0, start);
-        MapPosState firstFinishState = solveIt(mapCache, startState, finish);
+        MapPosState firstFinishState = solveIt(mapCache, new MapPosState(0, start), finish);
         MapPosState backToStartState = solveIt(mapCache, firstFinishState, start);
         MapPosState secondFinishState = solveIt(mapCache, backToStartState, finish);
         return secondFinishState.minute;
