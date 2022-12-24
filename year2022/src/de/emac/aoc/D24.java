@@ -24,7 +24,7 @@ public class D24 {
         Util.tEnd(0, "Res2: "+ v2(readMapData(lines))+ " (825)");
     }
 
-    public static ArrayList<MapAndBliz> readMapData(String[] lines) {
+    public static TreeMap<Integer, MapAndBliz> readMapData(String[] lines) {
         HashSet<Pos> map = new HashSet();
         ArrayList<Bliz> bliz = new ArrayList<>();
         for (int y = minY; y <= maxY; y++) {
@@ -37,24 +37,24 @@ public class D24 {
                 }
             }
         }
-        ArrayList<MapAndBliz> mapList = new ArrayList<>();
-        mapList.add(new MapAndBliz(map, bliz));
-        return mapList;
+        TreeMap<Integer, MapAndBliz> mapCache = new TreeMap<>();
+        mapCache.put(0, new MapAndBliz(map, bliz));
+        return mapCache;
     }
 
-    private static int v1(ArrayList<MapAndBliz> mapList) {
-        return solveIt(mapList, new MapPosState(0, start), finish).minute;
+    private static int v1(TreeMap<Integer, MapAndBliz> mapCache) {
+        return solveIt(mapCache, new MapPosState(0, start), finish).minute;
     }
 
-    private static int v2(ArrayList<MapAndBliz> mapList) {
+    private static int v2(TreeMap<Integer, MapAndBliz> mapCache) {
         MapPosState startState = new MapPosState(0, start);
-        MapPosState out = solveIt(mapList, startState, finish);
-        MapPosState back = solveIt(mapList, out, start);
-        MapPosState end = solveIt(mapList, back, finish);
+        MapPosState out = solveIt(mapCache, startState, finish);
+        MapPosState back = solveIt(mapCache, out, start);
+        MapPosState end = solveIt(mapCache, back, finish);
         return end.minute;
     }
 
-    private static MapPosState solveIt(ArrayList<MapAndBliz> mapList, MapPosState initial, Pos finish) {
+    private static MapPosState solveIt(TreeMap<Integer, MapAndBliz> mapCache, MapPosState initial, Pos finish) {
         Queue<MapPosState> workList = new ArrayDeque<>();
         HashSet<MapPosState> visited = new HashSet<>();
         workList.add(initial);
@@ -62,8 +62,16 @@ public class D24 {
 
         while (!workList.isEmpty()) {
             MapPosState curMapState = workList.poll();
+
             // in order to avoid to calculate the nextMapState in each Minute of time...
-            MapAndBliz aBlizMapAtCurrMinute = getBlizAndMapAtMinute(curMapState.minute, mapList);
+            // we can use a simple cache...
+            MapAndBliz aBlizMapAtCurrMinute = mapCache.get(curMapState.minute);
+            while(aBlizMapAtCurrMinute == null){
+                int lastCalcMinute = mapCache.lastKey();
+                mapCache.put(lastCalcMinute+1, mapCache.get(lastCalcMinute).calcNextMap());
+                aBlizMapAtCurrMinute = mapCache.get(curMapState.minute);
+            }
+
             if (aBlizMapAtCurrMinute.canIMoveToPos(curMapState.pos)) {
                 if (finish.equals(curMapState.pos)) {
                     // finally we have reached the goal...
@@ -85,19 +93,6 @@ public class D24 {
             }
         }
         return null;
-    }
-
-    private static MapAndBliz getBlizAndMapAtMinute(int minute, ArrayList<MapAndBliz> blizAndMaps) {
-        int len = blizAndMaps.size();
-        if (minute < len) {
-            return blizAndMaps.get(minute);
-        } else {
-            MapAndBliz lastBlizAndMap = blizAndMaps.get(len - 1);
-            while (blizAndMaps.size() <= minute) {
-                blizAndMaps.add(lastBlizAndMap.calcNextMap());
-            }
-            return blizAndMaps.get(minute);
-        }
     }
 
     private record MapPosState(int minute, Pos pos) {
