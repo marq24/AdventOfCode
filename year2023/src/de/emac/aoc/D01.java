@@ -7,6 +7,8 @@ public class D01 {
         v1();
         v2();
         Util.tEnd(0);
+        //Res v1: 54601
+        //Res v2: 54078
     }
 
     public static void v1() {
@@ -22,15 +24,15 @@ public class D01 {
         String[] lines = INPUT.split("\n");
         int sum = 0;
         for (String line: lines){
-            line = line.replaceAll("one", "one1one");
-            line = line.replaceAll("two", "two2two");
-            line = line.replaceAll("three", "three3three");
-            line = line.replaceAll("four", "four4four");
-            line = line.replaceAll("five", "five5five");
-            line = line.replaceAll("six", "six6six");
-            line = line.replaceAll("seven", "seven7seven");
-            line = line.replaceAll("eight", "eight8eight");
-            line = line.replaceAll("nine", "nine9nine");
+            line = line.replaceAll("one", "o1e");
+            line = line.replaceAll("two", "t2o");
+            line = line.replaceAll("three", "t3e");
+            line = line.replaceAll("four", "f4r");
+            line = line.replaceAll("five", "f5e");
+            line = line.replaceAll("six", "s6x");
+            line = line.replaceAll("seven", "s7n");
+            line = line.replaceAll("eight", "e8t");
+            line = line.replaceAll("nine", "n9e");
             sum += getCalibration(line);
         }
         System.out.println("Res v2: "+sum);
