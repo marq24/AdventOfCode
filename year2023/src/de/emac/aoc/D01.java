@@ -13,15 +13,9 @@ public class D01 {
         String[] lines = INPUT.split("\n");
         int sum = 0;
         for (String line: lines){
-            line = line.replaceAll("[A-Za-z_]", "");
-            char d1 = line.charAt(0);
-            char d2 = d1;
-            if(line.length()>1){
-                d2 = line.charAt(line.length()-1);
-            }
-            sum = sum  + Integer.parseInt(d1+""+d2);
+            sum += getCalibration(line);
         }
-        System.out.println(sum);
+        System.out.println("Res v1: "+sum);
 
     }
     public static void v2() {
@@ -37,18 +31,22 @@ public class D01 {
             line = line.replaceAll("seven", "seven7seven");
             line = line.replaceAll("eight", "eight8eight");
             line = line.replaceAll("nine", "nine9nine");
-
-            line = line.replaceAll("[A-Za-z_]", "");
-            char d1 = line.charAt(0);
-            char d2 = d1;
-            if(line.length()>1){
-                d2 = line.charAt(line.length()-1);
-            }
-            sum = sum  + Integer.parseInt(d1+""+d2);
+            sum += getCalibration(line);
         }
-        System.out.println(sum);
-
+        System.out.println("Res v2: "+sum);
     }
+
+    private static int getCalibration(String line) {
+        // \D	A non-digit: [^0-9]
+        line = line.replaceAll("\\D", "");
+        char d1 = line.charAt(0);
+        char d2 = d1;
+        if(line.length()>1){
+            d2 = line.charAt(line.length()-1);
+        }
+        return Integer.parseInt(d1+""+d2);
+    }
+
     public static final String INTEST = """
             two1nine
             eightwothree
