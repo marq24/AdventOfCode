@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 public class D03 {
 
     private static ArrayList<Pos> neighbours;
-    private static ArrayList<Character> digitsAndDot;
     static{
         neighbours = new ArrayList();
         neighbours.add(new Pos(-1, -1));
@@ -18,19 +17,6 @@ public class D03 {
         neighbours.add(new Pos(0, 1));
         neighbours.add(new Pos(1, 0));
         neighbours.add(new Pos(1, 1));
-
-        digitsAndDot = new ArrayList<>();
-        digitsAndDot.add('0');
-        digitsAndDot.add('1');
-        digitsAndDot.add('2');
-        digitsAndDot.add('3');
-        digitsAndDot.add('4');
-        digitsAndDot.add('5');
-        digitsAndDot.add('6');
-        digitsAndDot.add('7');
-        digitsAndDot.add('8');
-        digitsAndDot.add('9');
-        digitsAndDot.add('.');
     }
 
     // v1: 538046
@@ -58,7 +44,8 @@ public class D03 {
                         int checkX = x + aNb.x;
                         int checkY = y + aNb.y;
                         if (checkY >= 0 && checkY < data.length && checkX >=0 && checkX < aLine.length()){
-                            if(!digitsAndDot.contains(data[checkY][checkX])){
+                            char c = data[checkY][checkX];
+                            if(c != '.' && !Character.isDigit(c)){
                                 symbol = true;
                                 break;
                             }
