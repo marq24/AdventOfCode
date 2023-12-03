@@ -19,18 +19,15 @@ public class D03 {
         neighbours.add(new Pos(1, 1));
     }
 
-    // v1: 538046
-    // v2: 81709807
     public static void main(String[] args) {
         Util.tStart(0);
         String[] lines = INPUT.split("\n");
-        char[][] data = getData(lines);
-        v1(lines, data);
-        v2(lines, data);
+        v1(lines);
+        v2(lines);
         Util.tEnd(0);
     }
 
-    public static void v1(String[] lines, char[][] data) {
+    public static void v1(String[] lines) {
         long sum = 0;
         Pattern p = Pattern.compile("\\d+");
         int y = 0;
@@ -43,8 +40,8 @@ public class D03 {
                     for (Pos aNb : neighbours) {
                         int checkX = x + aNb.x;
                         int checkY = y + aNb.y;
-                        if (checkY >= 0 && checkY < data.length && checkX >=0 && checkX < aLine.length()){
-                            char c = data[checkY][checkX];
+                        if (checkY >= 0 && checkY < lines.length && checkX >=0 && checkX < aLine.length()){
+                            char c = lines[checkY].charAt(checkX);
                             if(c != '.' && !Character.isDigit(c)){
                                 symbol = true;
                                 break;
@@ -59,10 +56,10 @@ public class D03 {
             }
             y++;
         }
-        System.out.println("Res v1: "+sum);
+        System.out.println("Res v1: "+sum+" "+(sum-538046));
     }
 
-    public static void v2(String[] lines, char[][] data) {
+    public static void v2(String[] lines) {
         HashMap<Pos, ArrayList<Integer>> gearsAtPosition = new HashMap();
 
         Pattern p = Pattern.compile("\\d+");
@@ -76,8 +73,8 @@ public class D03 {
                     for (Pos aDelta : neighbours) {
                         int checkX = x + aDelta.x;
                         int checkY = y + aDelta.y;
-                        if (checkY >= 0 && checkY < data.length && checkX >=0 && checkX < aLine.length()){
-                            if(data[checkY][checkX] == '*') {
+                        if (checkY >= 0 && checkY < lines.length && checkX >=0 && checkX < aLine.length()){
+                            if(lines[checkY].charAt(checkX) == '*') {
                                 aGearPosition = new Pos(checkY, checkX);
                                 break;
                             }
@@ -104,25 +101,8 @@ public class D03 {
                 sum += aPossibleGearTuple.get(0) * aPossibleGearTuple.get(1);
             }
         }
-        System.out.println("Res v2: "+sum);
+        System.out.println("Res v2: "+sum+" "+(sum-81709807));
     }
-
-    public static char[][] getData(String[] lines) {
-        char[][] data = new char[lines.length][lines[0].length()];
-        int y = 0;
-        for (String aLine:lines){
-            char[] destData = new char[aLine.length()];
-            aLine.getChars(0, aLine.length(), destData, 0);
-            int x = 0;
-            for(char aChar: destData){
-                data[y][x] = aChar;
-                x++;
-            }
-            y++;
-        }
-        return data;
-    }
-
 
     private static record Pos(int y, int x){}
 
