@@ -24,18 +24,20 @@ public class D04 {
 
     public static void v2(String[] lines) {
         long sum = 0;
-        ArrayList<Game> games = new ArrayList<>();
+        Game[] games = new Game[lines.length];
+        int i=0;
         for (String line : lines) {
-            games.add(parse(line));
+            games[i] = parse(line);
+            i++;
         }
 
         for (Game g : games) {
             sum += g.copies;
-            int add = g.index;
+            int currentIndex = g.index;
             for (String card : g.cards) {
                 if (g.wins.contains(card)) {
-                    games.get(add).copies += g.copies;
-                    add += 1;
+                    games[currentIndex].copies += g.copies;
+                    currentIndex += 1;
                 }
             }
         }
@@ -47,13 +49,11 @@ public class D04 {
         int pos = line.indexOf(':');
         int num = Integer.parseInt(line.substring(0, pos).trim());
         line = line.substring(pos + 1).trim();
-        line = line.replaceAll("   ", " ");
         line = line.replaceAll("  ", " ");
         String[] parts = line.split(" \\| ");
-        String[] winsX = parts[0].trim().split(" ");
-        String[] nums = parts[1].trim().split(" ");
-        ArrayList<String> wins = new ArrayList<>(Arrays.stream(winsX).toList());
-        return new Game(num, 1, wins, nums);
+        String[] wins = parts[0].trim().split(" ");
+        String[] cards = parts[1].trim().split(" ");
+        return new Game(num, 1, new ArrayList<>(Arrays.stream(wins).toList()), cards);
     }
 
     private static final class Game {
@@ -62,8 +62,8 @@ public class D04 {
         private final ArrayList<String> wins;
         private final String[] cards;
 
-        private Game(int n, int copies, ArrayList<String> wins, String[] cards) {
-            this.index = n;
+        private Game(int idx, int copies, ArrayList<String> wins, String[] cards) {
+            this.index = idx;
             this.copies = copies;
             this.wins = wins;
             this.cards = cards;
@@ -85,7 +85,7 @@ public class D04 {
         @Override
         public String toString() {
             return "Game[" +
-                    "n=" + index + ", " +
+                    "idx=" + index + ", " +
                     "copies=" + copies + ", " +
                     "wins=" + wins + ", " +
                     "cards=" + Arrays.stream(cards).toList() + ']';

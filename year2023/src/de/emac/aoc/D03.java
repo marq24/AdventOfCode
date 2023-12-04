@@ -48,11 +48,14 @@ public class D03 {
                             }
                         }
                     }
+                    if(symbol){
+                        break;
+                    }
                 }
-                last = m.end();
                 if(symbol){
                     sum += Integer.parseInt(m.group());
                 }
+                last = m.end();
             }
             y++;
         }
@@ -79,6 +82,9 @@ public class D03 {
                                 break;
                             }
                         }
+                    }
+                    if(aGearPosition != null){
+                        break;
                     }
                 }
                 if(aGearPosition != null){
